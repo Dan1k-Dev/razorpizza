@@ -1,0 +1,81 @@
+﻿@page
+@model ConstosoPizza.Pages.PizzaListModel
+@{
+    ViewData["Title"] = "Pizza List 🍕";
+}
+
+<!--Добавление новой пиццы к существующему списку-->
+<form method="post">
+<!--asp-validatiton-summury Отображение ошибок для всей МОДЕЛИ-->
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="form-group">
+    <label asp-for="NewPizza.Name" class="control-label"></label>
+    <input asp-for="NewPizza.Name" class="form-control"/> <!--Ввод-- asp-for: Привязка к свойству-->
+    <!--asp-validation-for отображение ошибок для КАЖДОГО поля ФОРМЫ-->
+        <span asp-validation-for="NewPizza.Name" class="text-danger"></span>
+</div>
+<div class="form-group">
+   <label asp-for="NewPizza.Size" class="control-label"></label>
+    <select asp-for="NewPizza.Size" class="form-control" id="PizzaSize"> <!--Выпадающий список-->
+        <option value="">--Select size--</option>
+        <option value="Small">Small</option>
+        <option value="Medium">Medium</option>
+        <option value="Large">Large</option>
+</select>
+<span asp-validation-for="NewPizza.Size" class="text-danger"></span>
+</div>
+<div class="form-group form-check">
+    <label class="form-check-label">
+                                                                       <!--Вспомогательный метод для отображения отображаемого свойства-->
+        <input class="form-check-input" asp-for="NewPizza.IsGlutenFree"/>@Html.DisplayNameFor(model => model.NewPizza.IsGlutenFree)
+    </label>
+</div>
+<div class="form-group">
+    <label asp-for="NewPizza.Price" class="control-label"></label>
+    <input asp-for="NewPizza.Price" class="form-control"/>
+    <span asp-validation-for="NewPizza.Price" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <input type="submit" value="create" class="btn btn-primary"/>
+</div>
+</form>
+<!--Добавление новой пиццы к существующему списку-->
+
+<!--Список пицц-->
+<h1>Pizza List🍕</h1>
+<table class="table mt-5"> <!--Список таблицей-->
+    <!--Заголовки колонок-->
+    <thead>
+        <tr>
+            <th scope="col">Name</th> <!--Колонки-->
+            <th scope="col">Price</th>
+            <th scope="col">Size</th>
+            <th scope="col">GlutenFree</th>
+            <th scope="col">Delete</th>
+        </tr>
+    </thead>
+    <!--Тело-->
+    <tbody>
+        <!--Перебираем список пицц в бд-->
+        @foreach (var pizza in Model.PizzaList) 
+        {
+            <tr>
+                <td>@pizza.Name</td>
+                 <td>@pizza.Price</td>
+                  <td>@pizza.Size</td>
+                   <td>@(pizza.IsGlutenFree ? "✔️" : string.Empty)</td>
+                    <td>
+                        <form method="post" asp-page-handler="Delete" asp-route-id="@pizza.Id">
+                            <button class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<!--Список пицц-->
+
+<!--Проверка введенных пользователем данных перед отправкой формы на сервер-->
+@section Scripts{
+    <partial name="_ValidationScriptsPartial"/>
+}
